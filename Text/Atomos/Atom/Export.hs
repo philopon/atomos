@@ -132,6 +132,7 @@ authorEntries = either
 feed :: Feed -> DList (Tag S.ByteString)
 feed (Feed cats cbrs gen icon i self other logo rs sub ttl upd ae) =
     let (authors, entries) = authorEntries ae in
+        D.singleton (TagOpen "?xml" [("version", "1.0"), ("encoding", "utf-8")]) <>
         D.singleton (TagOpen "feed" [("xmlns", "http://www.w3.org/2005/Atom")]) <>
         textElement "title" ttl <>
         maybe mempty (textElement "subtitle") sub <>
@@ -157,6 +158,4 @@ feed (Feed cats cbrs gen icon i self other logo rs sub ttl upd ae) =
         D.singleton (TagClose "feed")
 
 renderAtom :: Feed -> L.ByteString
-renderAtom f = 
-    "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n" `L.append`
-    renderTags (map (fmap L.fromStrict) $ D.toList $ feed f)
+renderAtom f = renderTags (map (fmap L.fromStrict) $ D.toList $ feed f)
